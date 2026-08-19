@@ -1,0 +1,2804 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>AltairOS</title>
+
+<style>
+/* =========================================================
+   基础
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "PingFang SC",
+        "Microsoft YaHei",
+        sans-serif;
+
+    background: #050608;
+    color: #fff;
+}
+
+/* =========================================================
+   整体桌面
+========================================================= */
+
+.app {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 20% 15%,
+            rgba(120, 140, 255, .18),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 85% 80%,
+            rgba(80, 210, 255, .12),
+            transparent 35%
+        ),
+        #080a0f;
+}
+
+/* 背景装饰 */
+
+.background {
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15)
+        ),
+        url("http://altairos.cc.cd/images/G2FbuezbYAA67MA.jpg");
+
+    background-size: cover;
+
+    background-position: center;
+
+    background-repeat: no-repeat;
+
+    pointer-events: none;
+}
+
+.background::before,
+.background::after {
+    display: none;
+}
+
+/* =========================================================
+   顶部状态栏
+========================================================= */
+
+.status-bar {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 52px;
+
+    padding: 0 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    z-index: 100;
+}
+
+.status-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 13px;
+    color: rgba(255,255,255,.65);
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #66ffb3;
+
+    box-shadow:
+        0 0 10px rgba(102,255,179,.8);
+}
+
+.status-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-size: 13px;
+    color: rgba(255,255,255,.65);
+}
+
+/* =========================================================
+   主容器
+========================================================= */
+
+.screen {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: min(650px, 88vw);
+    height: min(760px, 88vh);
+
+    transform: translate(-50%, -50%);
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 28px;
+
+    overflow: hidden;
+
+    background: rgba(10,12,18,.28);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.28);
+
+    isolation: isolate;
+}
+
+/* =========================================================
+   页面
+========================================================= */
+
+.page {
+    position: absolute;
+
+    inset: 0;
+
+    padding: 42px 28px 110px;
+
+    box-sizing: border-box;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transform:
+        translateX(40px)
+        scale(.98);
+
+    transition:
+        opacity .35s ease,
+        transform .35s cubic-bezier(.22,.8,.25,1);
+}
+
+.page.active {
+    opacity: 1;
+    pointer-events: auto;
+
+    transform: translateX(0) scale(1);
+}
+
+.page::-webkit-scrollbar {
+    width: 4px;
+}
+
+
+.page::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.page::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.12);
+
+    border-radius: 10px;
+}
+
+/* =========================================================
+   首页
+========================================================= */
+
+.home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    margin-bottom: 38px;
+}
+
+.logo-area h1 {
+    font-size: clamp(34px, 5vw, 52px);
+
+    line-height: 1;
+
+    letter-spacing: -2px;
+
+    font-weight: 700;
+}
+
+.logo-area p {
+    margin-top: 12px;
+
+    color: rgba(255,255,255,.42);
+
+    font-size: 14px;
+
+    letter-spacing: 2px;
+}
+
+.date {
+    text-align: right;
+
+    color: rgba(255,255,255,.45);
+
+    font-size: 13px;
+
+    line-height: 1.7;
+}
+
+/* =========================================================
+   四个功能按钮
+========================================================= */
+
+.menu-grid {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    width: 100%;
+
+    max-width: 520px;
+
+    margin: 35px auto 0;
+}
+
+.menu-button {
+    position: relative;
+
+    width: 100%;
+    height: 72px;
+
+    min-height: 72px;
+
+    padding: 0 20px;
+
+    display: flex;
+    align-items: center;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 17px;
+
+    color: white;
+
+    background:
+        rgba(10,12,18,.38);
+
+    cursor: pointer;
+
+    overflow: hidden;
+
+    text-align: left;
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        background .25s ease,
+        box-shadow .25s ease;
+}
+
+.menu-button::before {
+    content: "";
+
+    position: absolute;
+
+    width: 100px;
+    height: 100px;
+
+    right: -30px;
+    bottom: -30px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.05);
+
+    filter: blur(5px);
+
+    transition: .3s;
+}
+
+.menu-button:hover {
+    transform: translateY(-5px);
+
+    border-color: rgba(255,255,255,.2);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.1),
+            rgba(255,255,255,.035)
+        );
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.25);
+}
+
+.menu-button:active {
+    transform: scale(.97);
+}
+
+.menu-icon {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: rgba(255,255,255,.08);
+
+    font-size: 17px;
+
+    margin: 0 18px 0 0;
+}
+
+.menu-title {
+    font-size: 15px;
+
+    font-weight: 600;
+
+    flex: 1;
+}
+
+.menu-desc {
+    margin-top: 0;
+
+    color: rgba(255,255,255,.35);
+
+    font-size: 11px;
+}
+
+/* =========================================================
+   首页内容卡片
+========================================================= */
+
+.card-title {
+    font-size: 13px;
+
+    color: rgba(255,255,255,.42);
+
+    letter-spacing: 1px;
+
+    margin-bottom: 20px;
+}
+
+.hero-sub {
+    margin-top: 5px;
+
+    color: rgba(255,255,255,.4);
+
+    font-size: 13px;
+}
+
+.progress span {
+    display: block;
+
+    width: 72%;
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: white;
+
+    box-shadow: 0 0 15px rgba(255,255,255,.5);
+}
+
+/* =========================================================
+   子页面标题
+========================================================= */
+
+.sub-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-bottom: 35px;
+}
+
+.back-button {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255,255,255,.09);
+
+    border-radius: 14px;
+
+    background: rgba(255,255,255,.05);
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 20px;
+
+    transition: .2s;
+}
+
+.back-button:hover {
+    background: rgba(255,255,255,.1);
+}
+
+.sub-title h2 {
+    font-size: 30px;
+
+    letter-spacing: -1px;
+}
+
+.sub-title p {
+    margin-top: 5px;
+
+    color: rgba(255,255,255,.35);
+
+    font-size: 12px;
+}
+
+/* =========================================================
+   子页面内容
+========================================================= */
+
+.panel-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+.panel {
+    padding: 25px;
+
+    min-height: 180px;
+
+    border-radius: 22px;
+
+    border: 1px solid rgba(255,255,255,.07);
+
+    background: rgba(255,255,255,.025);
+
+    transition: .25s;
+}
+
+.panel:hover {
+    background: rgba(255,255,255,.045);
+
+    border-color: rgba(255,255,255,.13);
+}
+
+.panel-label {
+    font-size: 12px;
+
+    color: rgba(255,255,255,.35);
+
+    margin-bottom: 20px;
+}
+
+.panel-value {
+    font-size: 28px;
+
+    font-weight: 600;
+}
+
+.panel-text {
+    margin-top: 10px;
+
+    color: rgba(255,255,255,.4);
+
+    font-size: 13px;
+
+    line-height: 1.8;
+}
+
+/* =========================================================
+   列表
+========================================================= */
+
+.list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 9px;
+}
+
+.list-item {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 18px 20px;
+
+    border-radius: 15px;
+
+    background: rgba(255,255,255,.035);
+
+    border: 1px solid transparent;
+
+    transition: .2s;
+}
+
+.list-item:hover {
+    border-color: rgba(255,255,255,.1);
+
+    background: rgba(255,255,255,.055);
+}
+
+.list-left {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+.list-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: rgba(255,255,255,.07);
+}
+
+.list-name {
+    font-size: 14px;
+}
+
+.list-info {
+    margin-top: 4px;
+
+    color: rgba(255,255,255,.3);
+
+    font-size: 11px;
+}
+
+.list-right {
+    color: rgba(255,255,255,.35);
+
+    font-size: 12px;
+}
+
+/* =========================================================
+   游戏测评
+========================================================= */
+
+.review-categories {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    width: 100%;
+    max-width: 520px;
+
+    margin: 0 auto 22px;
+}
+
+.review-category {
+    padding: 8px 15px;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.035);
+
+    color: rgba(255,255,255,.42);
+
+    font-size: 11px;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        border-color .2s ease;
+}
+
+.review-category:hover {
+    color: rgba(255,255,255,.85);
+
+    border-color: rgba(255,255,255,.16);
+
+    background: rgba(255,255,255,.06);
+}
+
+.review-category.active {
+    color: white;
+
+    border-color: rgba(255,255,255,.16);
+
+    background: rgba(255,255,255,.10);
+}
+
+
+.review-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 22px;
+
+    width: 100%;
+
+    max-width: 520px;
+
+    margin: 0 auto;
+}
+
+
+.review-card {
+    width: 100%;
+
+    padding: 22px;
+
+    border: 1px solid rgba(255,255,255,.09);
+
+    border-radius: 22px;
+
+    background: rgba(12,14,20,.30);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.14);
+
+    overflow: hidden;
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        background .25s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-3px);
+
+    border-color: rgba(255,255,255,.15);
+
+    background: rgba(15,17,23,.38);
+}
+
+
+.review-card-header {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 18px;
+
+    margin-bottom: 18px;
+}
+
+.review-category-label {
+    margin-bottom: 6px;
+
+    color: rgba(255,255,255,.34);
+
+    font-size: 9px;
+
+    letter-spacing: 1.4px;
+
+    text-transform: uppercase;
+}
+
+.review-card h3 {
+    font-size: 22px;
+
+    line-height: 1.2;
+
+    letter-spacing: -.5px;
+}
+
+.review-meta {
+    margin-top: 7px;
+
+    color: rgba(255,255,255,.35);
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+.review-score {
+    flex-shrink: 0;
+
+    min-width: 62px;
+
+    padding: 9px 10px;
+
+    border-radius: 13px;
+
+    text-align: center;
+
+    background: rgba(255,255,255,.06);
+
+    border: 1px solid rgba(255,255,255,.07);
+}
+
+.review-score span {
+    font-size: 20px;
+
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+.review-score small {
+    color: rgba(255,255,255,.30);
+
+    font-size: 9px;
+}
+
+
+.review-gallery {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 7px;
+
+    margin-bottom: 20px;
+}
+
+.review-gallery img {
+    display: block;
+
+    width: 100%;
+
+    aspect-ratio: 16 / 9;
+
+    object-fit: cover;
+
+    border-radius: 12px;
+
+    border: 1px solid rgba(255,255,255,.07);
+
+    background: rgba(0,0,0,.25);
+}
+
+.review-gallery img:first-child {
+    grid-column: 1 / -1;
+
+    aspect-ratio: 16 / 8.5;
+}
+
+/* ★ 新增：确保卡片中的视频占满两列且不会让样式错位 */
+.review-gallery video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.07);
+    background: rgba(0,0,0,.25);
+    grid-column: 1 / -1;
+}
+
+.review-body {
+    padding-top: 2px;
+}
+
+.review-label {
+    margin-bottom: 10px;
+
+    color: rgba(255,255,255,.30);
+
+    font-size: 9px;
+
+    letter-spacing: 1.5px;
+}
+
+.review-body p {
+    color: rgba(255,255,255,.58);
+
+    font-size: 12px;
+
+    line-height: 1.9;
+
+    margin: 0;
+}
+
+.review-body p + p {
+    margin-top: 9px;
+}
+
+/* 没有截图时也不会破坏卡片 */
+.review-gallery img[src=""] {
+    display: none;
+}
+
+/* =========================================================
+   Review Preview
+========================================================= */
+
+.review-content {
+    margin-top: 24px;
+}
+
+.review-label {
+    margin-bottom: 12px;
+
+    font-size: 10px;
+
+    letter-spacing: 1.5px;
+
+    color: rgba(255,255,255,.38);
+
+    font-weight: 600;
+}
+
+.review-preview {
+    display: -webkit-box;
+
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+
+    margin: 0;
+
+    color: rgba(255,255,255,.58);
+
+    font-size: 13px;
+
+    line-height: 1.9;
+}
+
+
+/* 阅读全文 */
+
+.read-more-btn {
+    margin-top: 13px;
+
+    padding: 0;
+
+    border: none;
+
+    background: transparent;
+
+    color: rgba(255,255,255,.72);
+
+    font-size: 11px;
+
+    letter-spacing: .5px;
+
+    cursor: pointer;
+
+    transition:
+        color .25s ease,
+        transform .25s ease;
+}
+
+
+.read-more-btn span {
+    display: inline-block;
+
+    margin-left: 5px;
+
+    transition:
+        transform .25s ease;
+}
+
+
+.read-more-btn:hover {
+    color: white;
+
+    transform: translateX(3px);
+}
+
+
+.read-more-btn:hover span {
+    transform:
+        translate(2px,-2px);
+}
+
+/* =========================================================
+   Review Modal
+========================================================= */
+
+.review-modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity .3s ease;
+}
+
+/* 打开 */
+
+.review-modal.show {
+    opacity: 1;
+
+    pointer-events: auto;
+}
+
+/* =========================================================
+   背景
+========================================================= */
+
+.review-modal-backdrop {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        rgba(5,7,11,.55);
+
+    backdrop-filter:
+        blur(12px);
+
+    -webkit-backdrop-filter:
+        blur(12px);
+}
+
+/* =========================================================
+   弹窗主体
+========================================================= */
+
+.review-modal-window {
+    position: relative;
+
+    z-index: 2;
+
+    width: min(820px, 92vw);
+
+    max-height: 88vh;
+
+    overflow-y: auto;
+
+    box-sizing: border-box;
+
+    padding: 30px;
+
+    border:
+        1px solid rgba(255,255,255,.13);
+
+    border-radius: 26px;
+
+    background:
+        rgba(15,17,23,.82);
+
+    backdrop-filter:
+        blur(25px);
+
+    -webkit-backdrop-filter:
+        blur(25px);
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.55);
+
+    transform:
+        translateY(25px)
+        scale(.96);
+
+    transition:
+        transform .35s cubic-bezier(.22,.8,.25,1);
+}
+
+.review-modal.show
+.review-modal-window {
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+/* 隐藏滚动条 */
+
+.review-modal-window {
+    scrollbar-width: none;
+}
+
+.review-modal-window::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* =========================================================
+   Header
+========================================================= */
+
+.review-modal-header {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 24px;
+}
+
+
+.review-modal-category {
+    margin-bottom: 7px;
+
+    font-size: 10px;
+
+    letter-spacing: 1.5px;
+
+    color:
+        rgba(255,255,255,.35);
+}
+
+
+.review-modal-header h2 {
+    margin: 0;
+
+    font-size: 27px;
+
+    line-height: 1.2;
+
+    color: white;
+}
+
+
+/* =========================================================
+   关闭按钮
+========================================================= */
+
+.review-modal-close {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,.06);
+
+    color:
+        rgba(255,255,255,.7);
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
+}
+
+
+.review-modal-close:hover {
+    background:
+        rgba(255,255,255,.12);
+
+    color: white;
+}
+
+
+/* =========================================================
+   弹窗截图
+========================================================= */
+
+.review-modal-gallery {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin-bottom: 22px;
+}
+
+.review-modal-gallery img {
+    width: 100%;
+
+    height: 210px;
+
+    display: block;
+
+    object-fit: cover;
+
+    border-radius: 15px;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+}
+
+/* ★ 新增：弹窗中的视频样式，确保横跨宽度且样式统一 */
+.review-modal-gallery video {
+    width: 100%;
+    display: block;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,.08);
+    grid-column: 1 / -1;
+    background: rgba(0,0,0,.25);
+    margin-top: 5px;
+}
+
+/* 只有一张 */
+
+.review-modal-gallery.single img {
+    grid-column: 1 / -1;
+
+    height: auto;
+
+    max-height: 460px;
+}
+
+/* 三张图 */
+
+.review-modal-gallery.three img:first-child {
+    grid-column: 1 / -1;
+
+    height: 300px;
+}
+
+/* =========================================================
+   Meta
+========================================================= */
+
+.review-modal-meta {
+    margin-bottom: 25px;
+
+    padding-bottom: 20px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.08);
+
+    color:
+        rgba(255,255,255,.45);
+
+    font-size: 11px;
+}
+
+/* =========================================================
+   正文
+========================================================= */
+
+.review-modal-body {
+    color:
+        rgba(255,255,255,.68);
+
+    font-size: 14px;
+
+    line-height: 2;
+}
+
+.review-full-text p {
+    margin: 0 0 16px;
+}
+
+.review-full-text p:last-child {
+    margin-bottom: 0;
+}
+
+/* =========================================================
+   底部四按钮
+========================================================= */
+
+.bottom-nav {
+    position: absolute;
+
+    left: 50%;
+    bottom: 18px;
+
+    transform: translateX(-50%);
+
+    z-index: 200;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 6px;
+
+    border-radius: 18px;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    background:
+        rgba(18,20,27,.82);
+
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.35);
+}
+
+.nav-item {
+    width: 70px;
+    height: 44px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 3px;
+
+    border: 0;
+
+    border-radius: 13px;
+
+    background: transparent;
+
+    color: rgba(255,255,255,.38);
+
+    cursor: pointer;
+
+    font-size: 17px;
+
+    transition: .25s;
+}
+
+.nav-item span {
+    font-size: 9px;
+}
+
+.nav-item:hover {
+    color: white;
+
+    background: rgba(255,255,255,.06);
+}
+
+.nav-item.active {
+    color: white;
+
+    background: rgba(255,255,255,.09);
+}
+
+/* =========================================================
+   Toast
+========================================================= */
+
+.toast {
+    position: fixed;
+
+    left: 50%;
+    bottom: 90px;
+
+    transform:
+        translateX(-50%)
+        translateY(20px);
+
+    padding: 12px 20px;
+
+    border-radius: 13px;
+
+    background: rgba(25,27,34,.9);
+
+    border: 1px solid rgba(255,255,255,.1);
+
+    color: rgba(255,255,255,.8);
+
+    font-size: 13px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: .3s;
+
+    z-index: 999;
+}
+
+.toast.show {
+    opacity: 1;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+}
+
+/* =========================================================
+   响应式
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .screen {
+        width: 94vw;
+        height: 90vh;
+
+        border-radius: 26px;
+    }
+
+    .page {
+        padding: 45px 25px 100px;
+    }
+
+    .menu-grid {
+        gap: 11px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .status-bar {
+        padding: 0 17px;
+    }
+
+    .screen {
+        width: 100vw;
+        height: 100vh;
+
+        border: none;
+
+        border-radius: 0;
+    }
+
+    .page {
+        padding: 65px 18px 100px;
+    }
+
+    .home-header {
+        display: flex;
+
+        justify-content: space-between;
+        align-items: flex-end;
+
+        margin-bottom: 10px;
+    }
+
+    .date {
+        text-align: left;
+    }
+
+    .menu-grid {
+        gap: 10px;
+    }
+
+    .menu-button {
+        height: 64px;
+        min-height: 64px;
+
+        padding: 0 15px;
+    }
+
+    .menu-icon {
+        width: 34px;
+        height: 34px;
+
+        margin: 0 14px 0 0;
+    }
+
+    .review-card {
+        padding: 17px;
+    }
+
+    .review-card-header {
+        gap: 10px;
+    }
+
+    .review-card h3 {
+        font-size: 19px;
+    }
+
+    .review-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .review-gallery img:first-child {
+        grid-column: auto;
+    }
+
+    .review-category {
+        padding: 7px 12px;
+    }
+
+    .panel-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bottom-nav {
+        bottom: 12px;
+    }
+
+    .nav-item {
+        width: 62px;
+    }
+}
+
+/* =========================================================
+   动画
+========================================================= */
+
+@keyframes fadeUp {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page.active .animate {
+    animation: fadeUp .55s ease both;
+}
+
+.page.active .delay-1 {
+    animation-delay: .05s;
+}
+
+.page.active .delay-2 {
+    animation-delay: .1s;
+}
+
+.page.active .delay-3 {
+    animation-delay: .15s;
+}
+
+.page.active .delay-4 {
+    animation-delay: .2s;
+}
+
+/* =========================================================
+   Profile 页面链接
+========================================================= */
+
+.profile-links {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    width: 100%;
+
+    max-width: 520px;
+
+    margin: 10px auto 0;
+}
+
+/* =========================================================
+   Profile - About 简介
+========================================================= */
+
+.profile-about {
+    width: 100%;
+    max-width: 520px;
+
+    margin: 34px auto 0;
+
+    padding: 27px 30px 29px;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(255,255,255,.10);
+
+    border-radius: 22px;
+
+    background:
+        rgba(15,17,23,.30);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.10);
+}
+
+
+/* 标题 */
+
+.profile-about h3 {
+    margin: 0 0 21px;
+
+    font-size: 25px;
+
+    line-height: 1.2;
+
+    font-weight: 700;
+
+    letter-spacing: -0.5px;
+
+    color: rgba(255,255,255,.95);
+}
+
+
+/* 正文 */
+
+.about-text {
+    color: rgba(255,255,255,.58);
+
+    font-size: 13px;
+
+    line-height: 2;
+
+    letter-spacing: .1px;
+}
+
+
+/* 每一段 */
+
+.about-text p {
+    margin: 0;
+}
+
+
+/* 段落之间 */
+
+.about-text p + p {
+    margin-top: 7px;
+}
+
+
+/* =========================================================
+   单个链接按钮
+========================================================= */
+
+.profile-link {
+    position: relative;
+
+    width: 100%;
+    min-height: 76px;
+
+    padding: 0 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    text-align: left;
+
+    text-decoration: none;
+
+    color: white;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 18px;
+
+    background:
+        rgba(10,12,18,.38);
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    cursor: pointer;
+
+    transition:
+        transform .25s ease,
+        background .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+
+/* =========================================================
+   鼠标悬停
+========================================================= */
+
+.profile-link:hover {
+    transform: translateX(5px);
+
+    background:
+        rgba(255,255,255,.08);
+
+    border-color:
+        rgba(255,255,255,.18);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.18);
+}
+
+
+/* =========================================================
+   点击
+========================================================= */
+
+.profile-link:active {
+    transform: scale(.98);
+}
+
+
+/* =========================================================
+   左侧图标
+========================================================= */
+
+.profile-link-icon {
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 17px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,.08);
+
+    border:
+        1px solid rgba(255,255,255,.05);
+
+    color:
+        rgba(255,255,255,.85);
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   中间文字
+========================================================= */
+
+.profile-link-content {
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+.profile-link-title {
+    font-size: 15px;
+
+    font-weight: 600;
+
+    line-height: 1.4;
+}
+
+
+.profile-link-desc {
+    margin-top: 5px;
+
+    color:
+        rgba(255,255,255,.38);
+
+    font-size: 11px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   右侧箭头
+========================================================= */
+
+.profile-link-arrow {
+    flex-shrink: 0;
+
+    margin-left: 15px;
+
+    color:
+        rgba(255,255,255,.35);
+
+    font-size: 18px;
+
+    transition:
+        transform .25s ease,
+        color .25s ease;
+}
+
+
+.profile-link:hover .profile-link-arrow {
+    transform: translate(3px, -3px);
+
+    color:
+        rgba(255,255,255,.8);
+}
+
+
+/* =========================================================
+   待定按钮
+========================================================= */
+
+.profile-link-disabled {
+    opacity: .48;
+
+    cursor: default;
+}
+
+
+.profile-link-disabled:hover {
+    transform: none;
+
+    background:
+        rgba(10,12,18,.38);
+
+    border-color:
+        rgba(255,255,255,.08);
+
+    box-shadow: none;
+}
+
+
+.profile-link-disabled:active {
+    transform: none;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+    <div class="background"></div>
+
+    <!-- =====================================================
+         顶部状态栏
+    ====================================================== -->
+
+    <div class="status-bar">
+
+        <div class="status-left">
+            <span class="status-dot"></span>
+            <span>ALTAIR SYSTEM ONLINE</span>
+        </div>
+
+        <div class="status-right">
+            <span id="clock">00:00</span>
+            <span>●●●</span>
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+         主屏幕
+    ====================================================== -->
+
+    <main class="screen">
+
+
+        <!-- =================================================
+             首页
+        ================================================== -->
+
+        <section
+            class="page active"
+            id="page-home"
+        >
+
+            <div class="home-header animate">
+
+                <div class="logo-area">
+
+                    <h1>AltairOS</h1>
+
+                    <p>
+                        PERSONAL INTERFACE / SYSTEM 01
+                    </p>
+
+                </div>
+
+                <div class="date">
+
+                    <div id="date">
+                        2026.08.14
+                    </div>
+
+                    <div>
+                        PERSONAL TERMINAL
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 四个核心功能 -->
+
+            <div class="menu-grid">
+
+                <button
+                    class="menu-button animate delay-1"
+                    onclick="openPage('profile')"
+                >
+                    <div class="menu-icon">
+                        ◉
+                    </div>
+
+                    <div class="menu-title">
+                        Profile
+                    </div>
+
+                    <div class="menu-desc">
+                        个人/关于
+                    </div>
+                </button>
+
+
+                <button
+                    class="menu-button animate delay-2"
+                    onclick="openPage('projects')"
+                >
+                    <div class="menu-icon">
+                        ◇
+                    </div>
+
+                    <div class="menu-title">
+                        Projects
+                    </div>
+
+                    <div class="menu-desc">
+                        项目与作品
+                    </div>
+                </button>
+
+
+                <button
+                    class="menu-button animate delay-4"
+                    onclick="openPage('reviews')"
+                >
+                    <div class="menu-icon">
+                        ★
+                    </div>
+
+                    <div class="menu-title">
+                        Game Reviews
+                    </div>
+
+                    <div class="menu-desc">
+                        游戏测评
+                    </div>
+                </button>
+
+
+                <button
+                    class="menu-button animate delay-3"
+                    onclick="openPage('system')"
+                >
+                    <div class="menu-icon">
+                        ⌘
+                    </div>
+
+                    <div class="menu-title">
+                        System
+                    </div>
+
+                    <div class="menu-desc">
+                        系统状态
+                    </div>
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             Profile
+        ================================================== -->
+        
+<section class="page" id="page-profile">
+
+    <div class="sub-header">
+        <button class="back-button" onclick="goHome()">←</button>
+        <div class="sub-title">
+            <h2>Profile</h2>
+            <p>PERSONAL INFORMATION</p>
+        </div>
+    </div>
+
+    <div class="profile-about">
+        <h3>AltairOS</h3>
+        <div class="about-text">
+            <p>你好，欢迎来到我的个人空间！</p>
+            <p>
+                这个站点目前是一个记录与分享的小基地。
+                你可以在这里找到我的联系方式，
+                以及我整理的一些兴趣资源。
+            </p>
+            <p>这里仍在持续搭建中，后续会陆续上线我的项目作品、
+                个人简历以及更多的日常创作。网站目前以测试功能为主，很高兴认识你！</p>
+        </div>
+    </div>
+
+    <div class="profile-links">
+        <!-- Discord -->
+        <a class="profile-link" href="https://discord.gg/TG8r2V8Gr" target="_blank" rel="noopener noreferrer">
+            <div class="profile-link-icon">◉</div>
+            <div class="profile-link-content">
+                <div class="profile-link-title">酒馆频道</div>
+                <div class="profile-link-desc">酒馆频道 // Discord</div>
+            </div>
+            <div class="profile-link-arrow">↗</div>
+        </a>
+
+        <!-- Steam -->
+        <a class="profile-link" href="https://steamcommunity.com/profiles/76561198805164435/" target="_blank" rel="noopener noreferrer">
+            <div class="profile-link-icon">◇</div>
+            <div class="profile-link-content">
+                <div class="profile-link-title">Steam个人资料</div>
+                <div class="profile-link-desc">游戏好友 // 我的 Steam 资料</div>
+            </div>
+            <div class="profile-link-arrow">↗</div>
+        </a>
+
+        <!-- QQ -->
+        <a class="profile-link" href="https://qm.qq.com/q/sf4lIIA1BC" target="_blank" rel="noopener noreferrer">
+            <div class="profile-link-icon">✉</div>
+            <div class="profile-link-content">
+                <div class="profile-link-title">联系我</div>
+                <div class="profile-link-desc">联系我 // Contact (QQ)</div>
+            </div>
+            <div class="profile-link-arrow">↗</div>
+        </a>
+
+        <!-- 待定 -->
+        <button class="profile-link profile-link-disabled" type="button">
+            <div class="profile-link-icon">+</div>
+            <div class="profile-link-content">
+                <div class="profile-link-title">待定</div>
+                <div class="profile-link-desc">FUNCTION // PENDING</div>
+            </div>
+            <div class="profile-link-arrow">···</div>
+        </button>
+    </div>
+
+</section>
+
+
+        <!-- =================================================
+             Projects
+        ================================================== -->
+
+        <section class="page" id="page-projects">
+            <div class="sub-header">
+                <button class="back-button" onclick="goHome()">←</button>
+                <div class="sub-title">
+                    <h2>Projects</h2>
+                    <p>SELECTED WORKS</p>
+                </div>
+            </div>
+
+            <div class="list">
+                <div class="list-item" onclick="showToast('Blender Project')" style="cursor:pointer">
+                    <div class="list-left">
+                        <div class="list-icon">01</div>
+                        <div>
+                            <div class="list-name">Flower Sea Train</div>
+                            <div class="list-info">Blender / 3D Environment</div>
+                        </div>
+                    </div>
+                    <div class="list-right">VIEW →</div>
+                </div>
+
+                <div class="list-item" onclick="showToast('Python Project')" style="cursor:pointer">
+                    <div class="list-left">
+                        <div class="list-icon">02</div>
+                        <div>
+                            <div class="list-name">Python Backend</div>
+                            <div class="list-info">FastAPI / REST API</div>
+                        </div>
+                    </div>
+                    <div class="list-right">VIEW →</div>
+                </div>
+
+                <div class="list-item" onclick="showToast('Data Structure Project')" style="cursor:pointer">
+                    <div class="list-left">
+                        <div class="list-icon">03</div>
+                        <div>
+                            <div class="list-name">Data Structures</div>
+                            <div class="list-info">C / Algorithms</div>
+                        </div>
+                    </div>
+                    <div class="list-right">VIEW →</div>
+                </div>
+
+                <div class="list-item" onclick="showToast('Web Interface')" style="cursor:pointer">
+                    <div class="list-left">
+                        <div class="list-icon">04</div>
+                        <div>
+                            <div class="list-name">Altair Interface</div>
+                            <div class="list-info">HTML / CSS / JavaScript</div>
+                        </div>
+                    </div>
+                    <div class="list-right">VIEW →</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- =================================================
+             Game Reviews
+        ================================================== -->
+
+        <section class="page" id="page-reviews">
+
+            <div class="sub-header">
+                <button class="back-button" onclick="goHome()">←</button>
+                <div class="sub-title">
+                    <h2>Game Reviews</h2>
+                    <p>PERSONAL GAME REVIEWS</p>
+                </div>
+            </div>
+
+
+            <!-- 游戏分类 -->
+
+            <div class="review-categories">
+                <button class="review-category active" data-category="all" onclick="filterReviews('all', this)">全部</button>
+                <button class="review-category" data-category="rpg" onclick="filterReviews('rpg', this)">RPG</button>
+                <button class="review-category" data-category="action" onclick="filterReviews('action', this)">动作</button>
+                <button class="review-category" data-category="indie" onclick="filterReviews('indie', this)">独立游戏</button>
+                <button class="review-category" data-category="visual_novel" onclick="filterReviews('visual_novel', this)">视觉小说</button>
+            </div>
+
+            <div class="review-list">
+
+                <!-- Cyberpunk 2077 -->
+
+                <article class="review-card" data-category="rpg">
+
+                    <div class="review-card-header">
+                        <div>
+                            <div class="review-category-label">RPG / OPEN WORLD</div>
+                            <h3>Cyberpunk 2077</h3>
+                            <p class="review-meta">夜之城 · 单人 · 开放世界</p>
+                        </div>
+                        <div class="review-score">
+                            <span>9.2</span><small>/ 10</small>
+                        </div>
+                    </div>
+
+                    <div class="review-gallery">
+                        <img src="http://altairos.cc.cd/images/下载 (3).jpg" alt="Cyberpunk 2077 游戏截图 1" loading="lazy">
+                        <img src="http://altairos.cc.cd/images/下载 (4).jpg" alt="Cyberpunk 2077 游戏截图 2" loading="lazy">
+                        <img src="http://altairos.cc.cd/images/下载 (5).jpg" alt="Cyberpunk 2077 游戏截图 3" loading="lazy">
+                    </div>
+
+                    <div class="review-body">
+                        <div class="review-label">MY REVIEW</div>
+                        <p>
+                            夜之城真正吸引我的地方，不只是霓虹灯和义体，
+                            而是它把城市做成了一个可以慢慢闲逛的巨大舞台。
+                            主线故事有很强的电影感，角色塑造也很容易让人投入。
+                        </p>
+                        <p>
+                            它最大的优点是氛围和沉浸感，最大的缺点则是开放世界
+                            任务结构有时会让节奏变得比较碎。如果喜欢剧情驱动、
+                            科幻世界观和探索，我会很推荐。
+                        </p>
+
+                        <!-- ★ 新增阅读全文按钮 -->
+                        <button class="read-more-btn" onclick="openReview('game-cp2077')">
+                            阅读全文
+                            <span>↗</span>
+                        </button>
+                    </div>
+
+                </article>
+
+
+                <!-- ELDEN RING -->
+
+                <article class="review-card" data-category="action rpg">
+
+                    <div class="review-card-header">
+                        <div>
+                            <div class="review-category-label">ACTION RPG / SOULSLIKE</div>
+                            <h3>ELDEN RING</h3>
+                            <p class="review-meta">交界地 · 单人 / 联机 · 开放世界</p>
+                        </div>
+                        <div class="review-score">
+                            <span>9.5</span><small>/ 10</small>
+                        </div>
+                    </div>
+
+                    <div class="review-gallery">
+                        <img src="http://altairos.cc.cd/images/42DFC2C913F2587D.jpg" alt="ELDEN RING 游戏截图 1" loading="lazy">
+                        <img src="http://altairos.cc.cd/images/20260213202403_1.jpg" alt="ELDEN RING 游戏截图 2" loading="lazy">
+                        <img src="http://altairos.cc.cd/images/20260201221621_1.jpg" alt="ELDEN RING 游戏截图 3" loading="lazy">
+                    </div>
+
+                    <div class="review-body">
+                        <div class="review-label">MY REVIEW</div>
+                        <p>
+                            我喜欢《艾尔登法环》的原因很简单：
+                            它愿意让玩家自己发现答案。地图上的每一座建筑、
+                            每一个不起眼的洞穴，都可能藏着新的战斗或者故事。
+                        </p>
+                        <p>
+                            难度并不是它唯一的卖点，真正让人上头的是探索、
+                            构筑和战斗之间形成的循环。第一次进入一个未知区域时，
+                            那种“我到底会遇到什么”的感觉非常难得。
+                        </p>
+
+                        <!-- ★ 新增阅读全文按钮 -->
+                        <button class="read-more-btn" onclick="openReview('game-eldenring')">
+                            阅读全文
+                            <span>↗</span>
+                        </button>
+                    </div>
+
+                </article>
+
+
+                <!-- Revue Starlight El Dorado -->
+
+                <article class="review-card" data-category="visual_novel">
+
+                    <div class="review-card-header">
+                        <div>
+                            <div class="review-category-label">AVG / VISUAL NOVEL</div>
+                            <h3>Revue Starlight El Dorado</h3>
+                            <p class="review-meta">动漫 · 续作 / 视觉小说 · 舞台剧</p>
+                        </div>
+                        <div class="review-score">
+                            <span>9.7</span><small>/ 10</small>
+                        </div>
+                    </div>
+
+                    <div class="review-gallery">
+                        <img src="http://altairos.cc.cd/images/下载 (6).jpg" alt="Revue Starlight El Dorado 游戏截图 1" loading="lazy">
+                        <img src="http://altairos.cc.cd/images/下载.jpg" alt="Revue Starlight El Dorado 游戏截图 2" loading="lazy">
+                        <img src="http://altairos.cc.cd/images/下载 (2).jpg" alt="Revue Starlight El Dorado 游戏截图 3" loading="lazy">
+                    </div>
+
+                    <div class="review-body">
+                        <div class="review-label">MY REVIEW</div>
+                        <p>
+                            恋哥哥男声太好听了，不饰演一下祖尔菲卡尔可惜了。
+                            作为一个 后日谈+新篇章 的形式，补完了些tv剧情留下的坑，ed卖了一波超级情怀，作为少歌粉丝还是很满意的。
+                            但除了蕉哥哥线的舞台剧部分从动机上做出了较大区分，其他线的剧情差异并不大，重复看的时候还是有点无趣，
+                            而且主线的舞台剧部分并不完整，初次看的时候很多情节非常割裂...
+                        </p>
+
+                        <button class="read-more-btn" onclick="openReview('game-01')">
+                            阅读全文
+                            <span>↗</span>
+                        </button>
+                    </div>
+
+                </article>
+
+
+                <!-- DEVIL MAY CRY 5 -->
+
+                <article class="review-card" data-category="action">
+
+                    <div class="review-card-header">
+                        <div>
+                            <div class="review-category-label">STYLISH / ACTION GAME</div>
+                            <h3>Devil May Cry 5</h3>
+                            <p class="review-meta">动作 · 单人 · 砍杀</p>
+                        </div>
+                        <div class="review-score">
+                            <span>9.0</span><small>/ 10</small>
+                        </div>
+                    </div>
+
+                    <div class="review-gallery">
+                        <img src="http://altairos.cc.cd/images/20260817212603_1.jpg" alt="DEVIL MAY CRY 5 游戏截图 1" loading="lazy">
+                        <img src="http://altairos.cc.cd/images/20260723230451_1.jpg" alt="DEVIL MAY CRY 5 游戏截图 2" loading="lazy">
+                        <img src="http://altairos.cc.cd/images/20260810205222_1.jpg" alt="DEVIL MAY CRY 5 游戏截图 3" loading="lazy">
+                        
+                        <video controls playsinline>
+                            <source src="http://altairos.cc.cd/video/Devil May Cry 5 2026.08.17 - 21.55.08.03.DVR.mp4" type="video/mp4">
+                            你的浏览器不支持视频播放。
+                        </video>
+                    </div>
+
+                    <div class="review-body">
+                        <div class="review-label">MY REVIEW</div>
+                        <p>
+                            打血宫的时候偶然间想到了上学写字那会儿
+                            一口气写久了，字会越写越歪；搁着几天不练，手感也会生疏，
+                            但只要每天写又会觉得字迹越来越养眼，甚至上瘾
+                            玩鬼泣5的感觉也类似，哪怕卸载一段时间后又时不时想去玩两把。
+                        </p>
+                        <p>
+                            没啥奖励，也不一定能打出漂亮的连段，但这种持续纯粹的微小反馈，又会让我想再次打开它。
+                            不一定算我玩过的最好玩的游戏，但实打实给了我一种相当独特的体验，满昏
+                        </p>
+
+                        <!-- ★ 新增阅读全文按钮 -->
+                        <button class="read-more-btn" onclick="openReview('game-dmc5')">
+                            阅读全文
+                            <span>↗</span>
+                        </button>
+                    </div>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             System
+        ================================================== -->
+
+        <section class="page" id="page-system">
+            <div class="sub-header">
+                <button class="back-button" onclick="goHome()">←</button>
+                <div class="sub-title">
+                    <h2>System</h2>
+                    <p>SYSTEM MONITOR</p>
+                </div>
+            </div>
+
+            <div class="panel-grid">
+                <!-- Browser -->
+                <div class="panel">
+                    <div class="panel-label">BROWSER</div>
+                    <div class="panel-value" id="browser-info">DETECTING...</div>
+                    <div class="panel-text">Current browser</div>
+                </div>
+
+                <!-- Platform -->
+                <div class="panel">
+                    <div class="panel-label">PLATFORM</div>
+                    <div class="panel-value" id="platform-info">DETECTING...</div>
+                    <div class="panel-text">Operating environment</div>
+                </div>
+
+                <!-- CPU -->
+                <div class="panel">
+                    <div class="panel-label">CPU CORES</div>
+                    <div class="panel-value" id="cpu-info">--</div>
+                    <div class="panel-text">Logical processor cores</div>
+                </div>
+
+                <!-- Memory -->
+                <div class="panel">
+                    <div class="panel-label">MEMORY</div>
+                    <div class="panel-value" id="memory-info">--</div>
+                    <div class="panel-text">Approximate device memory</div>
+                </div>
+
+                <!-- Display -->
+                <div class="panel">
+                    <div class="panel-label">DISPLAY</div>
+                    <div class="panel-value" id="display-info">--</div>
+                    <div class="panel-text">Screen resolution</div>
+                </div>
+
+                <!-- Viewport -->
+                <div class="panel">
+                    <div class="panel-label">VIEWPORT</div>
+                    <div class="panel-value" id="viewport-info">--</div>
+                    <div class="panel-text">Browser window size</div>
+                </div>
+
+                <!-- Network -->
+                <div class="panel">
+                    <div class="panel-label">NETWORK</div>
+                    <div class="panel-value" id="network-info">CHECKING...</div>
+                    <div class="panel-text" id="network-detail">Network status</div>
+                </div>
+
+                <!-- Language -->
+                <div class="panel">
+                    <div class="panel-label">LANGUAGE</div>
+                    <div class="panel-value" id="language-info">--</div>
+                    <div class="panel-text" id="timezone-info">--</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================================================
+             底部五个按钮
+        ================================================== -->
+
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-page="home" onclick="openPage('home')">
+                ⌂
+                <span>HOME</span>
+            </button>
+            <button class="nav-item" data-page="profile" onclick="openPage('profile')">
+                ◉
+                <span>PROFILE</span>
+            </button>
+            <button class="nav-item" data-page="projects" onclick="openPage('projects')">
+                ◇
+                <span>PROJECTS</span>
+            </button>
+            <button class="nav-item" data-page="reviews" onclick="openPage('reviews')">
+                ★
+                <span>REVIEWS</span>
+            </button>
+            <button class="nav-item" data-page="system" onclick="openPage('system')">
+                ⌘
+                <span>SYSTEM</span>
+            </button>
+        </nav>
+
+    </main>
+
+<div class="review-modal" id="review-modal">
+
+    <div class="review-modal-backdrop" onclick="closeReview()"></div>
+
+    <div class="review-modal-window">
+        <div class="review-modal-header">
+            <div>
+                <div class="review-modal-category" id="modal-category">GAME REVIEW</div>
+                <h2 id="modal-title">游戏名称</h2>
+            </div>
+            <button class="review-modal-close" onclick="closeReview()" aria-label="关闭">×</button>
+        </div>
+
+        <div class="review-modal-gallery" id="modal-gallery"></div>
+        <div class="review-modal-meta" id="modal-meta"></div>
+
+        <div class="review-modal-body">
+            <div class="review-label">MY REVIEW</div>
+            <div class="review-full-text" id="modal-review"></div>
+        </div>
+    </div>
+</div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">Action</div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   页面切换
+========================================================= */
+
+function openPage(pageName) {
+    const pages = document.querySelectorAll(".page");
+    pages.forEach(page => {
+        page.classList.remove("active");
+    });
+
+    const target = document.getElementById("page-" + pageName);
+
+    if (target) {
+        void target.offsetWidth;
+        target.classList.add("active");
+    }
+
+    const navItems = document.querySelectorAll(".nav-item");
+    navItems.forEach(item => {
+        item.classList.remove("active");
+        if (item.dataset.page === pageName) {
+            item.classList.add("active");
+        }
+    });
+
+    if (pageName === "system") {
+        updateSystemInfo();
+    }
+
+    window.addEventListener("online", updateNetworkInfo);
+    window.addEventListener("offline", updateNetworkInfo);
+}
+
+
+/* =========================================================
+   游戏测评分类筛选
+========================================================= */
+
+function filterReviews(category, button) {
+    const cards = document.querySelectorAll(".review-card");
+    const buttons = document.querySelectorAll(".review-category");
+
+    buttons.forEach(item => {
+        item.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    cards.forEach(card => {
+        const categories = card.dataset.category.split(" ");
+        if (category === "all" || categories.includes(category)) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+
+
+/* =========================================================
+   返回首页
+========================================================= */
+
+function goHome() {
+    openPage("home");
+}
+
+
+/* =========================================================
+   Toast 提示
+========================================================= */
+
+let toastTimer = null;
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 1600);
+}
+
+
+/* =========================================================
+   时间
+========================================================= */
+
+function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, "0");
+    const m = String(now.getMinutes()).padStart(2, "0");
+    const s = String(now.getSeconds()).padStart(2, "0");
+
+    const clock = document.getElementById("clock");
+    clock.textContent = `${h}:${m}:${s}`;
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const date = document.getElementById("date");
+    date.textContent = `${year}.${month}.${day}`;
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+/* =========================================================
+   键盘快捷键
+========================================================= */
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") goHome();
+    if (event.key === "1") openPage("home");
+    if (event.key === "2") openPage("profile");
+    if (event.key === "3") openPage("projects");
+    if (event.key === "4") openPage("review");
+    if (event.key === "5") openPage("system");
+});
+
+
+/* =========================================================
+   防止按钮点击时出现浏览器默认行为
+========================================================= */
+
+document.querySelectorAll("button").forEach(button => {
+    button.addEventListener("click", event => {
+        event.currentTarget.blur();
+    });
+});
+
+function updateSystemInfo() {
+    // Browser
+    const userAgent = navigator.userAgent;
+    let browser = "Unknown";
+    if (userAgent.includes("Edg/")) browser = "Microsoft Edge";
+    else if (userAgent.includes("Chrome/")) browser = "Google Chrome";
+    else if (userAgent.includes("Firefox/")) browser = "Mozilla Firefox";
+    else if (userAgent.includes("Safari/")) browser = "Safari";
+    document.getElementById("browser-info").textContent = browser;
+
+    // Platform
+    let platform = navigator.userAgentData?.platform || navigator.platform || "Unknown";
+    document.getElementById("platform-info").textContent = platform;
+
+    // CPU
+    const cores = navigator.hardwareConcurrency;
+    document.getElementById("cpu-info").textContent = cores ? `${cores} CORES` : "UNKNOWN";
+
+    // Memory
+    if (navigator.deviceMemory) {
+        document.getElementById("memory-info").textContent = `${navigator.deviceMemory} GB`;
+    } else {
+        document.getElementById("memory-info").textContent = "UNAVAILABLE";
+    }
+
+    // Display
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+    document.getElementById("display-info").textContent = `${screenWidth} × ${screenHeight}`;
+
+    // Viewport
+    document.getElementById("viewport-info").textContent = `${window.innerWidth} × ${window.innerHeight}`;
+
+    // Network
+    updateNetworkInfo();
+
+    // Language
+    document.getElementById("language-info").textContent = navigator.language || "Unknown";
+
+    // Timezone
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.getElementById("timezone-info").textContent = timezone || "Unknown";
+}
+
+function updateNetworkInfo() {
+    const network = document.getElementById("network-info");
+    const detail = document.getElementById("network-detail");
+
+    if (!navigator.onLine) {
+        network.textContent = "OFFLINE";
+        detail.textContent = "No network connection";
+        return;
+    }
+    network.textContent = "ONLINE";
+
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (connection) {
+        const type = connection.effectiveType ? connection.effectiveType.toUpperCase() : "UNKNOWN";
+        const rtt = connection.rtt ? `${connection.rtt} ms` : "--";
+        detail.textContent = `${type} / RTT ${rtt}`;
+    } else {
+        detail.textContent = "Network connection active";
+    }
+}
+
+function openReview(reviewId) {
+    const data = reviewData[reviewId];
+    if (!data) return;
+
+    document.getElementById("modal-title").textContent = data.title;
+    document.getElementById("modal-category").textContent = data.category;
+    document.getElementById("modal-meta").textContent = data.meta;
+    document.getElementById("modal-review").innerHTML = data.review;
+
+    const gallery = document.getElementById("modal-gallery");
+    gallery.innerHTML = "";
+    gallery.className = "review-modal-gallery";
+
+    if (data.images.length === 1) {
+        gallery.classList.add("single");
+    } else if (data.images.length === 3) {
+        gallery.classList.add("three");
+    }
+
+    // 渲染图片
+    data.images.forEach(image => {
+        const img = document.createElement("img");
+        img.src = image;
+        img.alt = `${data.title} 游戏截图`;
+        gallery.appendChild(img);
+    });
+
+    // ★ 新增：如果含有预留视频地址，渲染视频标签
+    if (data.video) {
+        const vid = document.createElement("video");
+        vid.controls = true;
+        vid.playsInline = true;
+        vid.src = data.video; // 直接在数据里填上对应 MP4 链接即可
+        gallery.appendChild(vid);
+    }
+
+    const modal = document.getElementById("review-modal");
+    modal.classList.add("show");
+    document.body.style.overflow = "hidden";
+}
+
+function closeReview() {
+    const modal = document.getElementById("review-modal");
+    modal.classList.remove("show");
+    document.body.style.overflow = "";
+    
+    // 清空内容以防后台继续播放视频
+    setTimeout(() => {
+        document.getElementById("modal-gallery").innerHTML = "";
+    }, 300);
+}
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") closeReview();
+});
+
+/* =========================================================
+   ★ 更新后的游戏测评数据
+   每个游戏都可以自由添加视频链接和完整的富文本排版
+========================================================= */
+
+const reviewData = {
+
+    "game-01": {
+        title: "Revue Starlight El Dorado",
+        category: "AVG / VISUAL NOVEL",
+        meta: "动漫 · 续作 / 视觉小说 · 舞台剧 / 个人评分 9.7 / 10",
+        images: [
+            "http://altairos.cc.cd/images/下载 (6).jpg",
+            "http://altairos.cc.cd/images/下载.jpg",
+            "http://altairos.cc.cd/images/下载 (2).jpg"
+        ],
+        video: "", // 此处可放置你的视频直链 (例如: "http://...mp4")
+        review: `
+            <p>
+                恋哥哥男声太好听了，不饰演一下祖尔菲卡尔可惜了。 作为一个 后日谈+新篇章 的形式，补完了些tv剧情留下的坑，ed卖了一波超级情怀，作为少歌粉丝还是很满意的。 
+                但除了蕉哥哥线的舞台剧部分从动机上做出了较大区分，其他线的剧情差异并不大，重复看的时候还是有点无趣， 
+                而且主线的舞台剧部分并不完整，初次看的时候很多情节非常割裂， 真结局通关后才解锁完整的剧中剧，这个自定义演出部分倒是和少歌再演的主题相当契合。
+            </p>
+            <p>
+                但经费不足的缺点也确实很多，比如tv引以为豪的想象力演出，在视觉小说这个品类就很难发挥优势。
+            </p>
+            <p>
+                演出水平过于伤感，经费不足是一方面，
+                虽然不要求能做出魔夜那种演出吧 但还是没忍住吐槽一下，
+                而且缺的复仇之剑revue这块谁给我补啊？ed给我整的更空虚了，满昏。
+            </p>
+        `
+    },
+
+    "game-cp2077": {
+        title: "Cyberpunk 2077",
+        category: "RPG / OPEN WORLD",
+        meta: "夜之城 · 单人 · 开放世界 / 个人评分 9.2 / 10",
+        images: [
+            "http://altairos.cc.cd/images/下载 (3).jpg",
+            "http://altairos.cc.cd/images/下载 (4).jpg",
+            "http://altairos.cc.cd/images/下载 (5).jpg"
+        ],
+        video: "", // 预留放置视频链接
+        review: `
+            <p>
+                夜之城真正吸引我的地方，不只是霓虹灯和义体，
+                而是它把城市做成了一个可以慢慢闲逛的巨大舞台。
+                主线故事有很强的电影感，角色塑造也很容易让人投入。
+            </p>
+            <p>
+                它最大的优点是氛围和沉浸感，最大的缺点则是开放世界任务结构有时会让节奏变得比较碎。
+                如果喜欢剧情驱动、科幻世界观和探索，我会很推荐。
+            </p>
+            <p>（这里可以继续补充完整的游玩感受和测评文字……）</p>
+        `
+    },
+
+    "game-eldenring": {
+        title: "ELDEN RING",
+        category: "ACTION RPG / SOULSLIKE",
+        meta: "交界地 · 单人 / 联机 · 开放世界 / 个人评分 9.5 / 10",
+        images: [
+            "http://altairos.cc.cd/images/42DFC2C913F2587D.jpg",
+            "http://altairos.cc.cd/images/20260213202403_1.jpg",
+            "http://altairos.cc.cd/images/20260201221621_1.jpg"
+        ],
+        video: "", // 预留放置视频链接
+        review: `
+            <p>
+                我喜欢《艾尔登法环》的原因很简单：
+                它愿意让玩家自己发现答案。地图上的每一座建筑、
+                每一个不起眼的洞穴，都可能藏着新的战斗或者故事。
+            </p>
+            <p>
+                难度并不是它唯一的卖点，真正让人上头的是探索、
+                构筑和战斗之间形成的循环。第一次进入一个未知区域时，
+                那种“我到底会遇到什么”的感觉非常难得。
+            </p>
+            <p>（这里可以继续补充完整的游玩感受和测评文字……）</p>
+        `
+    },
+
+    "game-dmc5": {
+        title: "Devil May Cry 5",
+        category: "STYLISH / ACTION GAME",
+        meta: "动作 · 单人 · 砍杀 / 个人评分 9.0 / 10",
+        images: [
+            "http://altairos.cc.cd/images/20260817212603_1.jpg",
+            "http://altairos.cc.cd/images/20260723230451_1.jpg",
+            "http://altairos.cc.cd/images/20260810205222_1.jpg"
+        ],
+        video: "http://altairos.cc.cd/video/Devil May Cry 5 2026.08.17 - 21.55.08.03.DVR.mp4", 
+        review: `
+            <p>
+                打血宫的时候偶然间想到了上学写字那会儿
+                一口气写久了，字会越写越歪；搁着几天不练，手感也会生疏，
+                但只要每天写又会觉得字迹越来越养眼，甚至上瘾。
+                玩鬼泣5的感觉也类似，哪怕卸载一段时间后又时不时想去玩两把。
+            </p>
+            <p>
+                没啥奖励，也不一定能打出漂亮的连段，但这种持续纯粹的微小反馈，又会让我想再次打开它。
+                不一定算我玩过的最好玩的游戏，但实打实给了我一种相当独特的体验，满昏。
+            </p>
+            <p>（这里可以继续补充完整的游玩感受和测评文字……）</p>
+        `
+    }
+
+};
+
+</script>
+
+</body>
+</html>
