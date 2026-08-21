@@ -913,6 +913,20 @@ body {
     margin-top: 9px;
 }
 
+/* 限制卡片外部文字最大显示高度/行数，溢出自动出现省略号 ... */
+.review-body-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* 此处设置外部卡片最多显示的行数，例如 3 行或 4 行 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    color: rgba(255,255,255,.58);
+    font-size: 12px;
+    line-height: 1.8;
+    margin-bottom: 8px;
+}
+
 /* 没有截图时也不会破坏卡片 */
 .review-gallery img[src=""] {
     display: none;
@@ -1221,17 +1235,10 @@ body {
 
 .review-modal-gallery img {
     width: 100%;
-
-    height: 210px;
-
-    display: block;
-
+    aspect-ratio: 16 / 9; /* 统一按 16:9 标准比例渲染 */
     object-fit: cover;
-
     border-radius: 15px;
-
-    border:
-        1px solid rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.08);
 }
 
 /* ★ 新增：弹窗中的视频样式，确保横跨宽度且样式统一 */
@@ -1259,10 +1266,8 @@ body {
 
 .review-modal-gallery.three img:first-child {
     grid-column: 1 / -1;
-
-    height: 300px;
+    height: auto;
 }
-
 /* =========================================================
    Meta
 ========================================================= */
@@ -2091,7 +2096,7 @@ body {
             </div>
 
             <div class="list">
-                <div class="list-item" onclick="showToast('Blender Project')" style="cursor:pointer">
+                <div class="list-item" onclick="window.open('https://github.com/AltairENE/blender-', '_blank')" style="cursor:pointer">
                     <div class="list-left">
                         <div class="list-icon">01</div>
                         <div>
@@ -2102,7 +2107,7 @@ body {
                     <div class="list-right">VIEW →</div>
                 </div>
 
-                <div class="list-item" onclick="showToast('Python Project')" style="cursor:pointer">
+                <div class="list-item" onclick="window.open('https://example.com/python', '_blank')" style="cursor:pointer">
                     <div class="list-left">
                         <div class="list-icon">02</div>
                         <div>
@@ -2113,7 +2118,7 @@ body {
                     <div class="list-right">VIEW →</div>
                 </div>
 
-                <div class="list-item" onclick="showToast('Data Structure Project')" style="cursor:pointer">
+                <div class="list-item" onclick="window.open('https://example.com/c', '_blank')" style="cursor:pointer">
                     <div class="list-left">
                         <div class="list-icon">03</div>
                         <div>
@@ -2124,7 +2129,7 @@ body {
                     <div class="list-right">VIEW →</div>
                 </div>
 
-                <div class="list-item" onclick="showToast('Web Interface')" style="cursor:pointer">
+                <div class="list-item" onclick="window.open('https://example.com/web', '_blank')" style="cursor:pointer">
                     <div class="list-left">
                         <div class="list-icon">04</div>
                         <div>
@@ -2182,24 +2187,14 @@ body {
 
                     <div class="review-gallery">
                         <img src="http://altairos.cc.cd/images/下载 (3).jpg" alt="Cyberpunk 2077 游戏截图 1" loading="lazy">
-                        <img src="http://altairos.cc.cd/images/下载 (4).jpg" alt="Cyberpunk 2077 游戏截图 2" loading="lazy">
-                        <img src="http://altairos.cc.cd/images/下载 (5).jpg" alt="Cyberpunk 2077 游戏截图 3" loading="lazy">
                     </div>
 
                     <div class="review-body">
                         <div class="review-label">MY REVIEW</div>
-                        <p>
-                            夜之城真正吸引我的地方，不只是霓虹灯和义体，
-                            而是它把城市做成了一个可以慢慢闲逛的巨大舞台。
-                            主线故事有很强的电影感，角色塑造也很容易让人投入。
-                        </p>
-                        <p>
-                            它最大的优点是氛围和沉浸感，最大的缺点则是开放世界
-                            任务结构有时会让节奏变得比较碎。如果喜欢剧情驱动、
-                            科幻世界观和探索，我会很推荐。
-                        </p>
+                        
+                        <!-- 容器：页面初始化时由 JS 动态注入 reviewData[game-cp2077].review -->
+                        <div class="review-body-text" data-review-id="game-cp2077"></div>
 
-                        <!-- ★ 新增阅读全文按钮 -->
                         <button class="read-more-btn" onclick="openReview('game-cp2077')">
                             阅读全文
                             <span>↗</span>
@@ -2226,24 +2221,14 @@ body {
 
                     <div class="review-gallery">
                         <img src="http://altairos.cc.cd/images/42DFC2C913F2587D.jpg" alt="ELDEN RING 游戏截图 1" loading="lazy">
-                        <img src="http://altairos.cc.cd/images/20260213202403_1.jpg" alt="ELDEN RING 游戏截图 2" loading="lazy">
-                        <img src="http://altairos.cc.cd/images/20260201221621_1.jpg" alt="ELDEN RING 游戏截图 3" loading="lazy">
                     </div>
 
                     <div class="review-body">
                         <div class="review-label">MY REVIEW</div>
-                        <p>
-                            我喜欢《艾尔登法环》的原因很简单：
-                            它愿意让玩家自己发现答案。地图上的每一座建筑、
-                            每一个不起眼的洞穴，都可能藏着新的战斗或者故事。
-                        </p>
-                        <p>
-                            难度并不是它唯一的卖点，真正让人上头的是探索、
-                            构筑和战斗之间形成的循环。第一次进入一个未知区域时，
-                            那种“我到底会遇到什么”的感觉非常难得。
-                        </p>
+                        
+                        <!-- 容器：页面初始化时由 JS 动态注入 reviewData[game-eldenring].review -->
+                        <div class="review-body-text" data-review-id="game-eldenring"></div>
 
-                        <!-- ★ 新增阅读全文按钮 -->
                         <button class="read-more-btn" onclick="openReview('game-eldenring')">
                             阅读全文
                             <span>↗</span>
@@ -2270,20 +2255,15 @@ body {
 
                     <div class="review-gallery">
                         <img src="http://altairos.cc.cd/images/下载 (6).jpg" alt="Revue Starlight El Dorado 游戏截图 1" loading="lazy">
-                        <img src="http://altairos.cc.cd/images/下载.jpg" alt="Revue Starlight El Dorado 游戏截图 2" loading="lazy">
-                        <img src="http://altairos.cc.cd/images/下载 (2).jpg" alt="Revue Starlight El Dorado 游戏截图 3" loading="lazy">
                     </div>
 
                     <div class="review-body">
                         <div class="review-label">MY REVIEW</div>
-                        <p>
-                            恋哥哥男声太好听了，不饰演一下祖尔菲卡尔可惜了。
-                            作为一个 后日谈+新篇章 的形式，补完了些tv剧情留下的坑，ed卖了一波超级情怀，作为少歌粉丝还是很满意的。
-                            但除了蕉哥哥线的舞台剧部分从动机上做出了较大区分，其他线的剧情差异并不大，重复看的时候还是有点无趣，
-                            而且主线的舞台剧部分并不完整，初次看的时候很多情节非常割裂...
-                        </p>
+                        
+                        <!-- 容器：页面初始化时由 JS 动态注入 reviewData[game-revue].review -->
+                        <div class="review-body-text" data-review-id="game-revue"></div>
 
-                        <button class="read-more-btn" onclick="openReview('game-01')">
+                        <button class="read-more-btn" onclick="openReview('game-revue')">
                             阅读全文
                             <span>↗</span>
                         </button>
@@ -2309,24 +2289,14 @@ body {
 
                     <div class="review-gallery">
                         <img src="http://altairos.cc.cd/images/20260817212603_1.jpg" alt="DEVIL MAY CRY 5 游戏截图 1" loading="lazy">
-                        <img src="http://altairos.cc.cd/images/20260723230451_1.jpg" alt="DEVIL MAY CRY 5 游戏截图 2" loading="lazy">
-                        <img src="http://altairos.cc.cd/images/20260810205222_1.jpg" alt="DEVIL MAY CRY 5 游戏截图 3" loading="lazy">
                     </div>
 
                     <div class="review-body">
                         <div class="review-label">MY REVIEW</div>
-                        <p>
-                            打血宫的时候偶然间想到了上学写字那会儿
-                            一口气写久了，字会越写越歪；搁着几天不练，手感也会生疏，
-                            但只要每天写又会觉得字迹越来越养眼，甚至上瘾
-                            玩鬼泣5的感觉也类似，哪怕卸载一段时间后又时不时想去玩两把。
-                        </p>
-                        <p>
-                            没啥奖励，也不一定能打出漂亮的连段，但这种持续纯粹的微小反馈，又会让我想再次打开它。
-                            不一定算我玩过的最好玩的游戏，但实打实给了我一种相当独特的体验，满昏
-                        </p>
+                        
+                        <!-- 容器：页面初始化时由 JS 动态注入 reviewData[game-dmc5].review -->
+                        <div class="review-body-text" data-review-id="game-dmc5"></div>
 
-                        <!-- ★ 新增阅读全文按钮 -->
                         <button class="read-more-btn" onclick="openReview('game-dmc5')">
                             阅读全文
                             <span>↗</span>
@@ -2335,6 +2305,39 @@ body {
 
                 </article>
 
+
+                <!-- 告别回忆 双想 -->
+
+                <article class="review-card" data-category="visual_novel">
+
+                    <div class="review-card-header">
+                        <div>
+                            <div class="review-category-label">GALGAME / VISUAL NOVEL</div>
+                            <h3>告别回忆 双想</h3>
+                            <p class="review-meta">恋爱 · 视觉小说 · 模拟</p>
+                        </div>
+                        <div class="review-score">
+                            <span>6.1</span><small>/ 10</small>
+                        </div>
+                    </div>
+
+                    <div class="review-gallery">
+                        <img src="http://altairos.cc.cd/images/19eb9eb67e581-screenshotUrl.jpg" alt="告别回忆 双想 游戏截图 1" loading="lazy">
+                    </div>
+
+                    <div class="review-body">
+                        <div class="review-label">MY REVIEW</div>
+                        
+                        <!-- 容器：页面初始化时由 JS 动态注入 reviewData[game-mo9].review -->
+                        <div class="review-body-text" data-review-id="game-mo9"></div>
+
+                        <button class="read-more-btn" onclick="openReview('game-mo9')">
+                            阅读全文
+                            <span>↗</span>
+                        </button>
+                    </div>
+
+                </article>
 
             </div>
 
@@ -2834,7 +2837,7 @@ document.addEventListener("keydown", function(event) {
 
 const reviewData = {
 
-    "game-01": {
+    "game-revue": {
         title: "Revue Starlight El Dorado",
         category: "AVG / VISUAL NOVEL",
         meta: "动漫 · 续作 / 视觉小说 · 舞台剧 / 个人评分 9.7 / 10",
@@ -2906,7 +2909,6 @@ const reviewData = {
                 构筑和战斗之间形成的循环。第一次进入一个未知区域时，
                 那种“我到底会遇到什么”的感觉非常难得。
             </p>
-            <p>（这里可以继续补充完整的游玩感受和测评文字……）</p>
         `
     },
 
@@ -2922,7 +2924,7 @@ const reviewData = {
         video: "http://altairos.cc.cd/video/Devil May Cry 5 2026.08.17 - 21.55.08.03.DVR.mp4", 
         review: `
             <p>
-                打血宫的时候偶然间想到了上学写字那会儿
+                打血宫的时候偶然间想到了上学练字那会儿
                 一口气写久了，字会越写越歪；搁着几天不练，手感也会生疏，
                 但只要每天写又会觉得字迹越来越养眼，甚至上瘾。
                 玩鬼泣5的感觉也类似，哪怕卸载一段时间后又时不时想去玩两把。
@@ -2931,11 +2933,116 @@ const reviewData = {
                 没啥奖励，也不一定能打出漂亮的连段，但这种持续纯粹的微小反馈，又会让我想再次打开它。
                 不一定算我玩过的最好玩的游戏，但实打实给了我一种相当独特的体验，满昏。
             </p>
-            <p>（这里可以继续补充完整的游玩感受和测评文字……）</p>
         `
-    }
+    },
+
+
+    "game-mo9": {
+        title: "告别回忆 双想",
+        category: "AVG / VISUAL NOVEL",
+        meta: "恋爱模拟 · 续作 / 视觉小说 · 黑暗 / 个人评分 6.1 / 10",
+        images: [
+            "http://altairos.cc.cd/images/19eb9eb67e581-screenshotUrl.jpg",
+            "http://altairos.cc.cd/images/19eb9eb67e552-screenshotUrl.jpg",
+            "http://altairos.cc.cd/images/19eb9eb203a71-screenshotUrl.jpg"
+        ],
+        video: "", // 此处可放置你的视频直链 (例如: "http://...mp4")
+        review: `
+            <p>
+                全年龄猎奇佳作（全部剧透，通通透光）
+                本系列虽说定位是全年龄向纯爱作品，但mo9双想与与星空之下不同，跟78类似更像是无r18元素的带点猎奇的悬疑向恋爱作品 
+                虽然说邪教精神病半斤八俩，但我还是要说但剧本这块真的不如8，8的主线至少清晰明了，五位女主即使在各自的线路也有一定的互动，
+                但双想，除了两位封面女主，剩余四位的路线是完全独立的，不只是互相连面都没见过，
+                故事也独立于主线，甚至连主角和关键角色的人设都会变化（天宇宁宁是好女孩吗）
+            </p>
+            <p>
+                纱绘线作为解开剧情锁必须要走的一周目线，水平很不错，虽然男主有些入机，但纱绘的塑造足够撑起这封面女主的地位，在我心中是第一女主，
+                Lynn的配音也是神，听了那么多羊喘气再听这个哭腔，真觉得是降维打击，整体能给个七八分。
+                HE问题主要是结局太草率了，像是编剧先写的BE，写到后面才意识到自己写的是个恋爱作品，写了这个HE匆忙打了个补丁，
+                相比he的纱绘母亲又看了那曾经不知道看过多少遍的遗书幡然醒悟，悲怆更符合这个故事逻辑的结局
+            </p>
+            <p>
+                悲怆线的洲宫基本集世界恶意为一身了。母亲被洗脑，被学校劝休学、被同学歧视、朋友都避之不及，
+                连原本决心把上大学的积蓄换成救母亲的手术费也被母亲亲手捐给了“家”（气笑了），
+                结果依旧救不回母亲。这条线里给我看的最难受的，是即使知道自己的母亲被洗脑、那个记忆里的母亲永远无法回来，
+                但真犹豫着把手放到母亲脖颈上的那一刻，曾经的母亲带她去游乐场的幸福时光就会一闪而过，随即到来的是深深的内疚，
+                那些想要彻底断绝亲情的侵入性思维又会马上消失，想自己母亲活着的愿望还是重于大学的梦想，这样看悲剧是注定的，
+                无论纱绘如何努力学习打工，只要抛弃不下亲情，自己的良心就会一直导致纱绘处于被动的地位，
+                那已然成为泡沫的亲情就是她逃离家庭最大的束缚
+                当纱绘自己遇到了男主，认为马上可以迎接新生活，决定将那长发连同过去剪掉，马上随之而来的又是超越恶意，
+                所有的一切都是无用功，嘛我个人很喜欢这种BE，
+                每段剧情名称变化也很有意思，从“‘善意’”到“愈来愈重的恶意”再到“超越恶意”，
+                让刚刚减去长发的女主在下一个剧情节点迎来悲惨结局，这种反差感让我觉得这个BE写的极其精彩，
+                加上Lynn的配音，从台词到演出都能看出来这个be做的很用心，但我不理解什么教育意义，哦不是，任何意义。
+                远离邪教？男女主包括父母全是邪教分子，哪怕后面醒悟，过去不经心的行为可能影响过身边的人，
+                这种家庭有什么回归正道的办法，悲剧的导火索从遥远的过去就被点燃了，
+                还是得靠机械降神，让各条路线的编剧写出自己的男主化身，才能让平行世界的自己走向不同的可能性，那，意义呢？反派还是存在，问题也没解决，
+                所有人都看到了房间里的大象但不做出任何反应，8的凶手处理方式再怎么有争议至少事情是解决了吧，怎么邪教就不行了，难扳倒？
+                确实，在现代日本一个成立了不知道多久成员人数上千的邪教确实挺哈人的，消灭是不太现实，那为什么要写这个题材呢，
+                吃力不讨好，题材的潜力也没挖掘出来，明明知道定这个首发价格基本就是冲着收割老粉丝去的（我不是老粉），又不给老粉丝想看的，何意味
+            </p>
+            <p>
+                PS:主要这he做的也不行啊，到高潮部分戛然而止，大伙想看的直接略过去了，直接唐突跳转一年后，好了，
+                想吃糖看后续买fd去吧，我操了急着给你🐎买棺材吗我请问了，
+                稍微写一下后续会死吗？跟tm8的诺艾尔一个待遇了，做he还没做be用心
+            </p>
+            <p>
+
+                宁宁线
+                一部全年龄纯爱系列的作品居然有了监禁、跟踪、自导自演霸凌这些元素
+                病娇、偏执、疯狂的属性在一周目就初见端倪了，游戏在一周目对宁宁几乎全是负面塑造，
+                而且进宁宁线后依旧先让你看一个比较猎奇的结局（什么叫我觉醒了斯德哥尔摩综合症？行），
+                我觉得不管玩家能不能代入进男主，这个时候玩家对宁宁的好感一定是中等偏下的，偏执狂的形象比起天使纱绘可以说天差之别了
+            </p>
+            <p>
+                Not Always True里宁愿杀人都想选择一葵作为自己的未婚夫，甚至都监禁洗脑这事都敢做的出来，
+                结果在ne里因为吃了个放不下学姐的醋就要取消婚约嗯耍小孩脾气了？姐们，之前那么多女生都进你暗杀名单了，
+                纱绘和一葵这个时候连对话都不多，怎么这里就吃醋这么狠，就算按前一条线的人设逻辑你不应该在背后废掉她吗？
+                WTF，而且作为第一女主（没错是第一女主），
+                居然没有一条真正意义的Happy End，Normal End情节虽然看似低龄废萌，
+                实际上在这里头人物完全成为了邪教传播的无思想棋子，道德阈值再低也能看出来这结局不适合写后日谈，
+                总不能接洗脑吧XD，好歹洗脑结局里的新还有反抗的种子，有点伏笔，不然这条线看着纯别扭，后劲不足是一点，
+                最大的问题是，明明到处是问题，但没有解决任何问题
+                仅仅是把邪教当作一个背景板还是太可惜了，浪费题材
+            </p>
+            <p>
+                宁宁笔记这个想法挺好的，病娇的日记会写什么，全手绘和手写稿很用心，
+                想起玩石头门读冈部笔记的感觉，笔记翻阅到后面能感觉杀意越来越强，一定程度上补全了宁宁的人设，这块儿算是个有趣的设计，
+                设计的很有想法，但遗憾的是笔记原文没汉化看不懂，不知道发售一年了有没有民间汉化组把这部分翻译出来
+
+                剩余角色剧情就正常舒服许多了，晓空和雪加线算是废萌
+                晓空线是可以轻松享受的恋爱喜剧，而且这条线的男主也是行动力情商拉满，硬干校园小混混，看的相当舒服。
+                雪加线的感情线更细腻一些，后期友人以上恋人未满的感觉看着相当舒服，时不时还会互相调戏一把
+                和音线个人感觉一般般，但是数值很大，upup
+                东云灵,通关所有女主线解锁后的隐藏角色，感觉没什么恋爱味，纯一个科学adv，少量鬼图，但是小动物属性可爱捏
+
+                三条废萌，两个主线，隐藏女主鬼故事，体量是不差，但国区首发330的勇气堪比索尼了如果你想看一个偏猎奇悬疑的全年龄作品我倒是挺推荐，
+                整体而言算佳作，只不过制作组明显既要又要，或者说可能他们自己都不知道要什么的感觉，但很明显写手的水平不够，剧情的逻辑性和完整性都不够，导致整体的故事感受不够完整
+                另外三条废萌做的倒还可以，但总体感觉还差一口气，有点割裂感
+                推荐给道德阈值低的人玩
+            </p>
+        `
+    },
 
 };
+
+// 在 reviewData 声明完成后添加此渲染函数
+function renderCardPreviews() {
+    const previewContainers = document.querySelectorAll('.review-body-text[data-review-id]');
+    
+    previewContainers.forEach(container => {
+        const id = container.getAttribute('data-review-id');
+        if (reviewData[id] && reviewData[id].review) {
+            // 直接读取 reviewData 里面的完整 html/文本
+            container.innerHTML = reviewData[id].review;
+        }
+    });
+}
+
+// 页面初始化时执行渲染
+document.addEventListener("DOMContentLoaded", () => {
+    renderCardPreviews();
+});
 
 </script>
 
